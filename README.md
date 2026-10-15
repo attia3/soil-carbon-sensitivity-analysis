@@ -43,8 +43,11 @@ Input/output associations         Main and total effects
 | [`soc_response_metrics.R`](R/soc_response_metrics.R) | Extracts annual carbon-pool and N-cycling response variables from already-parsed soil C/N outputs |
 | [`parameter_sampling.R`](R/parameter_sampling.R) | General-purpose improved Latin hypercube sampling |
 | [`sensitivity_helpers.R`](R/sensitivity_helpers.R) | Reusable co-inertia/PCA and Sobol statistical functions |
+| [`maize_calibration_utils.R`](R/maize_calibration_utils.R) | Cultivar-specific observation matching, model output extraction, RMSE objective and evaluation metrics |
+| [`dssat_cornCV_calib.R`](R/dssat_cornCV_calib.R) | Calibrates SC10 and TC310 independently using a supplied model runner and the historical weighted objective |
+| [`mediaforarticle.R`](R/mediaforarticle.R) | Generates four-panel maize model-evaluation figures from matched observations and simulations |
 
-The repository also retains [maize calibration](dssat_cornCV_calib.R) and [observed-versus-simulated figure code](mediaforarticle.R) from the original study; those historical calibration scripts require a local installation and are not independently portable.
+The original maize calibration and publication plotting scripts have been **refactored and moved under `R/`**. Both now define reusable functions without automatically executing models or editing installed genotype files. See [the code and scientific-differences guide](docs/MAIZE_CALIBRATION_REFACTOR.md). To execute a calibrated model, you must provide a separately configured, licensed simulation adapter and validate its output treatment ordering.
 
 ## Quick start
 
@@ -59,6 +62,7 @@ Run the **synthetic demo** from the repository root:
 ```bash
 Rscript examples/maize_sensitivity_demo.R
 Rscript tests/test_sensitivity_pipeline.R
+Rscript tests/test_maize_calibration.R
 ```
 
 Or load the reusable functions and create a study-informed design:
@@ -70,6 +74,9 @@ source("R/maize_study_parameters.R")
 source("R/co_inertia_analysis.R")
 source("R/sobol_soc_analysis.R")
 source("R/soc_response_metrics.R")
+source("R/maize_calibration_utils.R")
+source("R/dssat_cornCV_calib.R")
+source("R/mediaforarticle.R")
 
 design <- design_maize_co_inertia(n = 1500, seed = 2026)
 sobol_design <- make_soc_sobol_design(n = 200, seed = 2026)
