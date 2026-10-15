@@ -1,63 +1,58 @@
-# DSSAT Maize Calibration, SOC Sensitivity Analysis and Soil Carbon Dynamics
+# Soil Carbon Dynamics and Sensitivity Analysis
 
-**Research code for DSSAT–CERES-Maize calibration**, with planned integration of the **co-inertia and Sobol global sensitivity analyses** associated with the published soil-carbon study in arid Mediterranean environments.
+**Model calibration • Global sensitivity • Variance decomposition • SOC dynamics**
 
-> **Repository status (important):** The publicly available files currently document maize cultivar calibration and related figures. The full co-inertia/Sobol analysis scripts from the paper are **not yet included**. This is not currently a complete, one-command replication package for the publication.
+Scientific methods and research source material relating to parameter estimation, co-inertia analysis and Sobol sensitivity of soil organic carbon (SOC) and crop-system dynamics in arid environments. The repository's title reflects **methods transferable to multiple process-based models**, while the original publication and legacy scripts use DSSAT.
 
-## Scientific reference
+## Peer-reviewed research
 
-Attia, A., et al. (2021). *Sensitivity of the DSSAT model in simulating maize yield and soil carbon dynamics in arid Mediterranean climate: Effect of soil, genotype and crop management*. **Field Crops Research**, 260, 107981.
+Attia, A., et al. (2021). *Sensitivity of the DSSAT model in simulating maize yield and soil carbon dynamics in arid Mediterranean climate: Effect of soil, genotype and crop management*. **Field Crops Research**, 260, 107981. https://doi.org/10.1016/j.fcr.2020.107981
 
-- DOI: https://doi.org/10.1016/j.fcr.2020.107981
-- Scientific aims: evaluate DSSAT under arid sandy-soil conditions; evaluate sensitivity of crop and soil variables to soil, cultivar, and management inputs.
-- Published analyses include co-inertia analysis of 14 model outputs and 25 soil/cultivar inputs, and Sobol variance-based analysis of initial/stable SOC, crop residue management, compost inputs, and simulated long-term SOC-related outputs.
+The paper:
+- evaluated process-based simulations against eight years of experimental observations;
+- used **co-inertia analysis** for relationships among model input factors and outputs;
+- applied **Sobol variance-based global sensitivity analysis** to SOC-related parameters and crop management (initial and stable SOC, residues, compost);
+- interpreted model output variability and interactions among influential inputs.
 
-**Do not infer** that those published co-inertia/Sobol computations can be rerun from the current repository files alone.
+**Scientific provenance:** The published co-inertia analysis describes 25 soil/cultivar inputs and 14 outputs. The supplied archived scripts contain several historical experiments with different input counts. Those versions have not yet been linked unambiguously to the paper's final figures.
 
-## Repository contents currently available
+## What's in this repository?
 
-| Path | Contents |
+| Code | Purpose / limitation |
 | --- | --- |
-| `dssat_cornCV_calib.R` | Research calibration workflow for maize cultivars, including parameter optimization against observations |
-| `mediaforarticle.R` | Local DSSAT execution and observed-versus-simulated figure-generation workflow |
-| `Corn_calibration.csv` | Cultivar/parameter starting values and calibration ranges |
-| `OBS_Calib-Data_.csv` | Observed calibration dataset |
-| `DSSAT-files/` | Auxiliary DSSAT-related project files |
+| `dssat_cornCV_calib.R` | Historical maize cultivar calibration; depends on locally installed model |
+| `mediaforarticle.R` | Historical observed/simulated figure workflow; model paths are not portable |
+| `Corn_calibration.csv`, `OBS_Calib-Data_.csv` | Original small calibration/observation tables |
+| `DSSAT-files/` | Legacy project inputs |
+| `R/sensitivity_helpers.R` | New **model-agnostic** co-inertia and Sobol analytical wrappers |
+| `examples/synthetic_analysis.R` | Synthetic co-inertia example; **not the paper dataset** |
+| `docs/UPLOADED_SOURCE_INVENTORY.md` | Inventory of verified co-inertia and Sobol source-script variants |
+| `docs/ROADMAP.md` | Reproduction, modernization and validation work to do |
 
-The original scripts contain fixed Windows paths and assume local DSSAT model files and certain R packages. They are preserved as **historical research code** rather than presented as portable production software.
+## Run a synthetic statistical example
 
-## Scientific workflow and relevance
+Requires R and the CRAN package `ade4`:
 
-```text
-Field observations + DSSAT soil / cultivar / management inputs
-    ↓
-Calibrate model parameters and check simulated-versus-observed data
-    ↓
-(Published paper) co-inertia parameter/output screening
-    ↓
-(Published paper) Sobol variance-based sensitivity of SOC dynamics
-    ↓
-Interpret uncertainty drivers and site/management dependence
+```r
+install.packages("ade4")
+source("R/sensitivity_helpers.R")
+# At the project root, run: Rscript examples/synthetic_analysis.R
 ```
 
-The last two analytical stages are **described in the paper**, but their source scripts must be added and checked before claiming reproducibility from this repository.
+`run_co_inertia(inputs, outputs)` accepts numeric input and output tables with aligned simulation rows, and performs PCA followed by co-inertia using `ade4`.
 
-### Relevance to soil carbon quantification
+`run_sobol_salt(model_function, x1, x2)` wraps the `sensitivity` package's Sobol/Saltelli estimator for **user-supplied factor matrices and a user-supplied model function**. It is not the original article's full simulation driver; no claim is made that a synthetic example reproduces published numerical results.
 
-The research demonstrates experience identifying **which model inputs and assumptions influence SOC stock, SOC turnover, soil CO₂ efflux, and crop productivity**. These methods can support model evaluation and targeted data-collection decisions. The publication is an agronomic model sensitivity study—not an approved SOC credit-estimation framework.
+## Reproducibility status
 
-## Running the existing code
+The original source archives include multiple co-inertia configurations and two Sobol variants. They require local model installations and scripts that may overwrite genotype, soil and experiment input files. The publication-specific code, input schema and outputs need a figure-by-figure crosswalk and separate safe execution before the repository can be described as a full replication package.
 
-1. Install an appropriate DSSAT version and obtain experiment, soil, cultivar and weather inputs with the required rights.
-2. Review the R scripts for DSSAT executable paths and required packages; the current paths reflect the original Windows workstation.
-3. Check cultivar, ecotype, management and observational-data schemas before changing model inputs.
-4. Make a separate working copy of genotype files: the legacy scripts may overwrite DSSAT cultivar/ecotype files.
-5. Run on a small, independently checkable case before producing any figures or extending the analysis.
+**This work demonstrates sensitivity analysis and evaluation of soil carbon dynamics, not independently approved crediting or certification software.**
 
-## Planned improvements
+## Use beyond a single model
 
-See [docs/ROADMAP.md](docs/ROADMAP.md) for integration of the original co-inertia and Sobol scripts, refactoring, test fixtures, dependency specifications, and reproducible research examples.
+The statistical helpers accept generic numerical data or a callable model interface and may be applied to other process-based models when model-specific simulation inputs, calibration and parameter ranges are verified. The published numerical results belong to the DSSAT study and should be cited accordingly.
 
-## Author, contribution and citation
+## Citation and rights
 
-Ahmed Attia. Cite the **Field Crops Research** paper for scientific claims and use commit-specific GitHub links when referring to code. A formal open-source license is not yet specified.
+Ahmed Attia and coauthors, *Field Crops Research* (2021), DOI above. Original code and institutional or third-party DSSAT assets may have separate rights. No explicit open-source license has been selected.
