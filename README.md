@@ -1,106 +1,118 @@
 # Soil Carbon Sensitivity Analysis
 
-**Carbon dynamics · Model calibration · Global sensitivity analysis · Variance decomposition**
+**Global sensitivity · Co-inertia · Sobol indices · Process-based model calibration · SOC dynamics**
 
-Scientific code and methods for investigating how **soil characteristics, management inputs, and model parameters** influence simulated soil organic carbon (SOC) and related agroecosystem outcomes.
+Research-oriented R workflows for quantifying how soil properties, cultivar parameters, and management practices influence soil organic carbon (SOC), productivity, and nutrient cycling. The statistical components are **model-independent**. Their scientific provenance is a published maize/DSSAT study in arid Mediterranean conditions.
 
-The **statistical methods are transferable across models**; the peer-reviewed study motivating this repository used **DSSAT** for maize and SOC dynamics under arid Mediterranean conditions.
+## Associated publication
 
-## Associated peer-reviewed study
+**Attia, A., et al. (2021)**. [Sensitivity of the DSSAT model in simulating maize yield and soil carbon dynamics in arid Mediterranean climate: Effect of soil, genotype and crop management](https://doi.org/10.1016/j.fcr.2020.107981). *Field Crops Research*, **260**, 107981.
 
-**Attia, A., et al. (2021).** [Sensitivity of the DSSAT model in simulating maize yield and soil carbon dynamics in arid Mediterranean climate: Effect of soil, genotype and crop management](https://doi.org/10.1016/j.fcr.2020.107981). *Field Crops Research*, **260**, 107981.
+The study evaluated a calibrated process-based model and applied two complementary techniques:
+- **Co-inertia analysis**, relating multivariate soil/cultivar inputs to crop, soil, and water output variables.
+- **Sobol variance-based sensitivity analysis**, quantifying main effects and interactions for carbon-related soil and management factors.
 
-The study combined:
+## Analysis workflow
 
-- **Calibration and evaluation** of simulated maize growth, water balance, nitrogen dynamics, and related outputs against field measurements.
-- **Co-inertia analysis** relating 25 soil/cultivar inputs to 14 model outputs.
-- **Sobol global sensitivity analysis** to investigate contributions and interactions of carbon-related soil properties and crop management.
-- Long-term interpretation of SOC stock change, carbon turnover, residue retention, organic amendments, and soil CO₂ emissions.
-
-**Scientific provenance:** The original research archives include several historical versions with different factor sets. These have not yet been fully matched to the publication's final tables and figures.
-
-## Repository contents
-
-### Reusable, model-independent statistical functions
-
-| File | Purpose |
-| --- | --- |
-| [`R/parameter_sampling.R`](R/parameter_sampling.R) | Improved Latin hypercube samples within explicitly defined parameter bounds |
-| [`R/sensitivity_helpers.R`](R/sensitivity_helpers.R) | Co-inertia analysis and Sobol/Saltelli sensitivity wrappers for user-provided model inputs/outputs |
-| [`examples/synthetic_analysis.R`](examples/synthetic_analysis.R) | Synthetic, standalone example illustrating co-inertia; **not the study dataset** |
-
-### Preserved historical research assets
-
-| File | Purpose |
-| --- | --- |
-| [`dssat_cornCV_calib.R`](dssat_cornCV_calib.R) | Maize cultivar calibration against field observations |
-| [`mediaforarticle.R`](mediaforarticle.R) | Research plotting and comparison of measured versus simulated data |
-| [`Corn_calibration.csv`](Corn_calibration.csv), [`OBS_Calib-Data_.csv`](OBS_Calib-Data_.csv) | Calibration parameters and observation examples |
-| [`DSSAT-files/`](DSSAT-files/) | Original model-related project assets |
-
-The historical scripts contain local Windows file paths and can overwrite model genotype and experiment inputs. **Review and run them in an isolated working copy**, not directly against an installed model directory.
-
-## Original co-inertia and Sobol research scripts
-
-**All eight original R analysis scripts from the supplied archives are now included.** The scientific statements are preserved; each script has a top-level safety guard because the historical code relies on local DSSAT file paths and can overwrite model input files. The scripts are available for inspection and are **not designed to run unchanged on a new computer**.
-
-**Co-inertia experiments — improved Latin hypercube sampling, DSSAT simulations, coupled input/output PCA and association plots:**
-
-- [Co_inertia1.R](legacy/co_inertia/Co_inertia1.R) — 1,500 × 26 input-design variant
-- [Co_inertia3_12.R](legacy/co_inertia/Co_inertia3_12.R) — 1,500 × 27 variant
-- [Senseanalysis5.R](legacy/co_inertia/Senseanalysis5.R) — 1,500 × 27 variant
-- [Senseanalysis6.R](legacy/co_inertia/Senseanalysis6.R) — 500 × 21 variant
-- [Senseanalysis7.R](legacy/co_inertia/Senseanalysis7.R) — 500 × 24 variant
-- [Senseanalysis4.R](legacy/co_inertia/Senseanalysis4.R) — 23-factor experiments, co-inertia and exploratory Sobol–Owen analysis
-
-**SOC and management Sobol experiments — variance-based sensitivity of long-term outputs:**
-
-- [Sobol.R](legacy/sobol/Sobol.R) — four-factor, 200-sample variant; multiple simulated responses
-- [Sobol2.R](legacy/sobol/Sobol2.R) — four-factor, 300-sample soil carbon-focused variant
-
-For method details, code safety, original versions, and publication crosswalk, see the [source archive guide](legacy/README.md) and [methods/source map](docs/METHODS_SOURCE_MAP.md).
-
-**Publication fidelity:** the article reports 25 co-inertia input factors and 14 outputs; several archived variants have different experimental dimensions. Their precise correspondence to the paper's final figures has not yet been verified. These sources demonstrate the actual analysis techniques, but are not a complete standalone reproduction package.
-
-## Example — explore links between input and output variables
-
-Use R with the CRAN package `ade4`; optional functions require `lhs` and `sensitivity`.
-
-```r
-install.packages(c("ade4", "lhs", "sensitivity"))
-source("R/sensitivity_helpers.R")
-source("R/parameter_sampling.R")
-
-# Run from the repository root:
-# Rscript examples/synthetic_analysis.R
+```text
+Soil / cultivar / management parameter ranges
+                    │
+       Latin hypercube or Saltelli design
+                    │
+    User-supplied process-based simulator
+                    │
+       Checked, matched response tables
+                    │
+    ┌───────────────┴────────────────┐
+    │                                │
+PCA + co-inertia                  Sobol indices
+Input/output associations         Main and total effects
+    └───────────────┬────────────────┘
+        SOC response interpretation
 ```
 
-`run_co_inertia(inputs, outputs)` accepts numeric tables with matched simulation rows. `make_lhs_design(bounds, n_samples)` draws a parameter experiment design. `run_sobol_salt(model_function, x1, x2)` is a generic Sobol wrapper.
+## R scripts
 
-**These reusable helpers are not yet validated as an end-to-end replication of the article.** The original experiment ranges, model runs, and saved outputs must be verified before claiming to reproduce published statistics.
+**Selected historical research methods have been consolidated into readable, configurable files under [`R/`](R/), without keeping eight nearly redundant or destructive original drivers.**
 
-## Relevance to soil carbon quantification
+| File | What it does |
+| --- | --- |
+| [`maize_study_parameters.R`](R/maize_study_parameters.R) | **Source-derived** factor ranges and response names: 26-factor co-inertia exploratory variant, four-factor SOC Sobol design, 14 co-inertia outputs, five Sobol outputs |
+| [`co_inertia_analysis.R`](R/co_inertia_analysis.R) | Builds LHS runs, checks and aligns simulation outputs by run ID, performs paired PCA/co-inertia, and plots loadings |
+| [`sobol_soc_analysis.R`](R/sobol_soc_analysis.R) | Builds independent Sobol/Saltelli A/B parameter matrices and computes variance-based sensitivity for model outputs |
+| [`soc_response_metrics.R`](R/soc_response_metrics.R) | Extracts annual carbon-pool and N-cycling response variables from already-parsed soil C/N outputs |
+| [`parameter_sampling.R`](R/parameter_sampling.R) | General-purpose improved Latin hypercube sampling |
+| [`sensitivity_helpers.R`](R/sensitivity_helpers.R) | Reusable co-inertia/PCA and Sobol statistical functions |
 
-Sensitivity analysis identifies influential model assumptions and their interactions. That can inform:
+The repository also retains [maize calibration](dssat_cornCV_calib.R) and [observed-versus-simulated figure code](mediaforarticle.R) from the original study; those historical calibration scripts require a local installation and are not independently portable.
 
-- prioritization of soil and management measurements;
-- parameter calibration and independent model evaluation;
-- investigation of uncertainty drivers in SOC predictions;
-- design of spatial simulation studies across heterogeneous environments.
+## Quick start
 
-These are methodological building blocks, **not** a substitute for probability-based soil sampling, carbon-stock uncertainty accounting, or a registry-approved crediting procedure.
+Install R packages used by the analysis:
 
-## Development and reproducibility
+```r
+install.packages(c("lhs", "ade4", "sensitivity"))
+```
 
-- [Original co-inertia and Sobol R scripts](legacy/README.md)
-- [Methods and publication source crosswalk](docs/METHODS_SOURCE_MAP.md)
-- [Original-script SHA-256 provenance](docs/ORIGINAL_SOURCE_CHECKSUMS.md)
-- [Inventory of original research variants](docs/UPLOADED_SOURCE_INVENTORY.md)
-- [Validation and repository modernization roadmap](docs/ROADMAP.md)
-- [Companion regional modeling pipeline](https://github.com/attia3/agroecosystem-simulation-pipeline)
+Run the **synthetic demo** from the repository root:
 
-## Citation, limitations, and permissions
+```bash
+Rscript examples/maize_sensitivity_demo.R
+Rscript tests/test_sensitivity_pipeline.R
+```
 
-Maintained by **Ahmed Attia**. Cite the [*Field Crops Research* paper](https://doi.org/10.1016/j.fcr.2020.107981) for the scientific findings and a specific Git commit for the available source code.
+Or load the reusable functions and create a study-informed design:
 
-Original co-inertia and Sobol analysis scripts are now available for inspection, but the published calculations have **not yet been independently reproduced from the public repository alone**. Licensed scientific software, institutional datasets, and experiment inputs may be required. No open-source license has been specified.
+```r
+source("R/parameter_sampling.R")
+source("R/sensitivity_helpers.R")
+source("R/maize_study_parameters.R")
+source("R/co_inertia_analysis.R")
+source("R/sobol_soc_analysis.R")
+source("R/soc_response_metrics.R")
+
+design <- design_maize_co_inertia(n = 1500, seed = 2026)
+sobol_design <- make_soc_sobol_design(n = 200, seed = 2026)
+
+# Feed the parameter matrices to YOUR safely configured model adapter.
+# Responses must use matching run IDs and the documented output names:
+# fit <- analyze_maize_co_inertia(design, responses)
+# indices <- analyze_soc_sobol(model_function, design = sobol_design)
+```
+
+**These demonstrations use synthetic model responses.** No locally installed DSSAT executable is launched, and none of these R functions modifies installed soil, genotype, or experiment files.
+
+## Original methods and selection
+
+From the uploaded 2020 research archives, two variants were selected for refactoring:
+
+| Source variant | Why selected | What was retained |
+| --- | --- | --- |
+| `Co_inertia1.R` | Explicit carbon-pool inputs (SAOC/SASC) in a detailed **26-factor, 1,500-run** LHS design | Exact exploratory factor ranges, the **14 source output names**, PCA/co-inertia approach |
+| `Sobol.R` | **Four-factor**, multiresponse SOC and crop sensitivity experiment | Factor ranges, SOC/nitrogen response definitions, Sobol/Saltelli analysis structure |
+
+The source study reports **25 inputs and 14 outputs** for the co-inertia analysis. The selected archived script contains **26 design factors**; that discrepancy remains unresolved. Accordingly, the provided files reproduce **the analytical methods and selected source configurations**, not the paper's final numerical tables or sensitivity figures.
+
+The independent Sobol A/B sampling in the modernized code also replaces the row-permutation approach used in the historical script. This improves the design's statistical independence but means estimates are **not guaranteed to equal historical results**.
+
+[Method provenance and original-version comparison](docs/METHODS_SOURCE_MAP.md) · [Research source inventory](docs/UPLOADED_SOURCE_INVENTORY.md)
+
+## Reproducibility and scientific safeguards
+
+- Numeric model responses are checked for finiteness and matched to factor designs using unique `run_id` values.
+- Factor bounds and simulated response names are explicit, rather than implicit in fixed line-number edits.
+- Simulation execution is injected through a callback, enabling separate safe adapters with versioned inputs and run directories.
+- The SOC fractions calculated from model pools **cannot be directly equated with physical laboratory POM/MAOC fractions**.
+- Full publication replication requires verifying the final experiment design, simulator version, original weather/soil/management inputs, and output matrices. See the [reproducibility roadmap](docs/ROADMAP.md).
+
+This is **scientific sensitivity analysis, not an approved carbon-crediting or soil-sampling methodology**.
+
+## Related code
+
+- [Agroecosystem Simulation Pipeline](https://github.com/attia3/agroecosystem-simulation-pipeline)
+- [SOC–N₂O ML Surrogate](https://github.com/attia3/THP-SOC-N2O-ML-surrogate)
+- [NAYD geospatial analysis](https://github.com/attia3/nayd)
+
+## Citation and rights
+
+Maintained by **Ahmed Attia**. Cite the *Field Crops Research* paper for scientific findings and a specific Git commit for source code. The historical DSSAT calibration code and third-party data have separate dependencies and rights. No open-source license has yet been selected.
