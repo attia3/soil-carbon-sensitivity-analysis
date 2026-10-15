@@ -40,6 +40,28 @@ The study combined:
 
 The historical scripts contain local Windows file paths and can overwrite model genotype and experiment inputs. **Review and run them in an isolated working copy**, not directly against an installed model directory.
 
+## Original co-inertia and Sobol research scripts
+
+**All eight original R analysis scripts from the supplied archives are now included.** The scientific statements are preserved; each script has a top-level safety guard because the historical code relies on local DSSAT file paths and can overwrite model input files. The scripts are available for inspection and are **not designed to run unchanged on a new computer**.
+
+**Co-inertia experiments — improved Latin hypercube sampling, DSSAT simulations, coupled input/output PCA and association plots:**
+
+- [Co_inertia1.R](legacy/co_inertia/Co_inertia1.R) — 1,500 × 26 input-design variant
+- [Co_inertia3_12.R](legacy/co_inertia/Co_inertia3_12.R) — 1,500 × 27 variant
+- [Senseanalysis5.R](legacy/co_inertia/Senseanalysis5.R) — 1,500 × 27 variant
+- [Senseanalysis6.R](legacy/co_inertia/Senseanalysis6.R) — 500 × 21 variant
+- [Senseanalysis7.R](legacy/co_inertia/Senseanalysis7.R) — 500 × 24 variant
+- [Senseanalysis4.R](legacy/co_inertia/Senseanalysis4.R) — 23-factor experiments, co-inertia and exploratory Sobol–Owen analysis
+
+**SOC and management Sobol experiments — variance-based sensitivity of long-term outputs:**
+
+- [Sobol.R](legacy/sobol/Sobol.R) — four-factor, 200-sample variant; multiple simulated responses
+- [Sobol2.R](legacy/sobol/Sobol2.R) — four-factor, 300-sample soil carbon-focused variant
+
+For method details, code safety, original versions, and publication crosswalk, see the [source archive guide](legacy/README.md) and [methods/source map](docs/METHODS_SOURCE_MAP.md).
+
+**Publication fidelity:** the article reports 25 co-inertia input factors and 14 outputs; several archived variants have different experimental dimensions. Their precise correspondence to the paper's final figures has not yet been verified. These sources demonstrate the actual analysis techniques, but are not a complete standalone reproduction package.
+
 ## Example — explore links between input and output variables
 
 Use R with the CRAN package `ade4`; optional functions require `lhs` and `sensitivity`.
@@ -70,7 +92,10 @@ These are methodological building blocks, **not** a substitute for probability-b
 
 ## Development and reproducibility
 
-- [Inventory of original co-inertia and Sobol scripts](docs/UPLOADED_SOURCE_INVENTORY.md)
+- [Original co-inertia and Sobol R scripts](legacy/README.md)
+- [Methods and publication source crosswalk](docs/METHODS_SOURCE_MAP.md)
+- [Original-script SHA-256 provenance](docs/ORIGINAL_SOURCE_CHECKSUMS.md)
+- [Inventory of original research variants](docs/UPLOADED_SOURCE_INVENTORY.md)
 - [Validation and repository modernization roadmap](docs/ROADMAP.md)
 - [Companion regional modeling pipeline](https://github.com/attia3/agroecosystem-simulation-pipeline)
 
@@ -78,4 +103,4 @@ These are methodological building blocks, **not** a substitute for probability-b
 
 Maintained by **Ahmed Attia**. Cite the [*Field Crops Research* paper](https://doi.org/10.1016/j.fcr.2020.107981) for the scientific findings and a specific Git commit for the available source code.
 
-The published calculations have **not yet been reproduced from the public repository alone**. Licensed scientific software, institutional datasets, and experiment inputs may be required. No open-source license has been specified.
+Original co-inertia and Sobol analysis scripts are now available for inspection, but the published calculations have **not yet been independently reproduced from the public repository alone**. Licensed scientific software, institutional datasets, and experiment inputs may be required. No open-source license has been specified.
