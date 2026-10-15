@@ -14,7 +14,7 @@ source("R/sobol_soc_analysis.R")
 # 1. Original source-derived co-inertia ranges; synthetic model responses.
 design <- design_maize_co_inertia(n = 80L, seed = 42L)
 mock_model <- function(x) {
-  values <- as.numeric(x[1, , drop = TRUE])
+  values <- unlist(x[1, , drop = FALSE], use.names = FALSE)
   names(values) <- names(x)
   # Make 14 finite, varying outputs to illustrate paired analysis.
   out <- vapply(seq_along(maize_co_inertia_responses()), function(k) {
