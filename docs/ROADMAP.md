@@ -8,13 +8,14 @@ The objective is to make peer-reviewed sensitivity analyses easier to understand
 - Generic `R/sensitivity_helpers.R` functions for co-inertia and Sobol analyses, assuming user-supplied compatible data/model functions.
 - Generic `R/parameter_sampling.R` improved Latin hypercube sampling.
 - Synthetic co-inertia example, explicitly separate from the journal article.
-- Inventory of original co-inertia and Sobol source variants in `docs/UPLOADED_SOURCE_INVENTORY.md`.
+- All eight original co-inertia and Sobol R scripts preserved under `legacy/` with top-level execution guards.
+- Source-to-method details in `docs/METHODS_SOURCE_MAP.md`.
 
 ## Remaining priorities
 
 1. **Publication-specific provenance:** reconcile archived factor designs against the *Field Crops Research* paper's 25-input / 14-output co-inertia and four-factor SOC/management Sobol experiments.
 2. **Match source to results:** establish script, DSSAT version, random seed, input/output matrix, plot and table for each published analysis.
-3. **Preserve the originals:** select definitive archive versions and place copies under a clearly marked `legacy/` directory only after permissions and path/safety review.
+3. **Preserve the originals (archive complete):** eight historical scripts are under `legacy/`. Next, verify which precise version generated each published figure and prepare a reviewed, portable version using isolated workspaces.
 4. **Make model execution safe:** remove writes to the installed genotype, ecotype, soil and experiment files; use generated run workspaces and parameterized config files.
 5. **Verify generic statistical functions:** add small deterministic R tests for Latin hypercube bounds, data alignment, PCA/co-inertia and Sobol sensitivity methods.
 6. **Create reproducible examples:** provide a synthetic standalone example and—if rights permit—a small real-data validation example reproducing identified statistics.
@@ -31,7 +32,8 @@ R/
 examples/
     synthetic_analysis.R
 legacy/
-    <reviewed research snapshots>
+    co_inertia/           # six guarded historical scripts
+    sobol/                # two guarded historical scripts
 data/
     README.md
 tests/
