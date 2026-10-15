@@ -1,50 +1,24 @@
-# Development roadmap — Soil Carbon Sensitivity Analysis
+# Reproducibility and development roadmap
 
-The objective is to make peer-reviewed sensitivity analyses easier to understand and reproduce **without changing the publication's actual scientific method**.
+## Available now
 
-## Currently available
+- Selected research settings from `Co_inertia1.R` and `Sobol.R` in `R/maize_study_parameters.R`.
+- Improved LHS, run-level simulation callbacks, paired data checks, PCA/co-inertia results, and loading plots in `R/co_inertia_analysis.R`.
+- Independent Sobol factor sampling and response-specific sensitivity evaluation in `R/sobol_soc_analysis.R`.
+- Source-derived SOC model-pool and nitrogen metrics from prepared annual outputs in `R/soc_response_metrics.R`.
+- Generic `R/parameter_sampling.R` and `R/sensitivity_helpers.R`.
+- Synthetic examples, input/metric tests and R syntax CI checks, none requiring licensed DSSAT software.
+- Original research variant details, SHA-256 checksums and historical Git commit references in `docs/`.
 
-- Legacy maize calibration and figure scripts; auxiliary CSV tables and model inputs.
-- Generic `R/sensitivity_helpers.R` functions for co-inertia and Sobol analyses, assuming user-supplied compatible data/model functions.
-- Generic `R/parameter_sampling.R` improved Latin hypercube sampling.
-- Synthetic co-inertia example, explicitly separate from the journal article.
-- All eight original co-inertia and Sobol R scripts preserved under `legacy/` with top-level execution guards.
-- Source-to-method details in `docs/METHODS_SOURCE_MAP.md`.
+## Remaining work
 
-## Remaining priorities
+1. **Reconcile final research methods**: the peer-reviewed article refers to 25 input variables and 14 outputs, while the selected exploratory archived script uses 26 factors.
+2. **Verify source-to-figure mapping**: use saved model results to match original R source and paper figures/tables.
+3. **Add a safe model adapter**: duplicate calibrated experiment assets into disposable, versioned model-run workspaces; never write directly into installed model directories.
+4. **Document units and interpretation**: validate all original factor units, especially the two carbon-related Sobol input settings and the lab/model-pool distinction.
+5. **Test package-dependent analysis**: validate all ade4/lhs/sensitivity execution in a pinned R environment, including estimator versions and reproducible seeds.
+6. **Cross-validate the original calculations**: report explained variance, co-inertia statistics, first/total Sobol effects and independent numerical agreement with published figures.
+7. **Release a full example**: include representative, permission-cleared model input/output data and automated figure reproduction if rights allow.
+8. **Document other model adapters**: generalize beyond DSSAT only after each engine's inputs, internal carbon pools and outputs have been independently checked.
 
-1. **Publication-specific provenance:** reconcile archived factor designs against the *Field Crops Research* paper's 25-input / 14-output co-inertia and four-factor SOC/management Sobol experiments.
-2. **Match source to results:** establish script, DSSAT version, random seed, input/output matrix, plot and table for each published analysis.
-3. **Preserve the originals (archive complete):** eight historical scripts are under `legacy/`. Next, verify which precise version generated each published figure and prepare a reviewed, portable version using isolated workspaces.
-4. **Make model execution safe:** remove writes to the installed genotype, ecotype, soil and experiment files; use generated run workspaces and parameterized config files.
-5. **Verify generic statistical functions:** add small deterministic R tests for Latin hypercube bounds, data alignment, PCA/co-inertia and Sobol sensitivity methods.
-6. **Create reproducible examples:** provide a synthetic standalone example and—if rights permit—a small real-data validation example reproducing identified statistics.
-7. **Pin dependencies:** R packages/versions, experiment matrix metadata, model version and any required nonredistributable inputs.
-8. **Document limitations:** make explicit which computations are reproducible using public code versus dependent on licensed scientific modeling tools and unpublished inputs.
-
-## Potential later layout (not all files exist yet)
-
-```text
-R/
-    parameter_sampling.R
-    sensitivity_helpers.R
-    model_evaluation.R
-examples/
-    synthetic_analysis.R
-legacy/
-    co_inertia/           # six guarded historical scripts
-    sobol/                # two guarded historical scripts
-data/
-    README.md
-tests/
-    testthat/
-docs/
-    methods.md
-    source_to_figure_map.md
-```
-
-## Methodological scope
-
-AHP/GIS suitability weighting, Latin hypercube input-design, co-inertia analysis, Sobol sensitivity, probability-based soil sampling and MCMC calibration solve different problems. This repository concentrates on **model-input experimental design and sensitivity of simulated SOC and crop-system responses**. It is not a soil-carbon certification engine, a validated field sampling scheme, or evidence of an implemented hierarchical Bayesian MRV framework.
-
-Full-paper replication will only be claimed after input data and numerical results are independently cross-checked.
+The current code is scientific analysis infrastructure, **not** an approved carbon-market MRV or soil sampling system.
