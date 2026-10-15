@@ -1,57 +1,48 @@
-# Roadmap — Soil Carbon Dynamics and Sensitivity Analysis
+# Development roadmap — Soil Carbon Sensitivity Analysis
 
-## Confirmed public assets
+The objective is to make peer-reviewed sensitivity analyses easier to understand and reproduce **without changing the publication's actual scientific method**.
 
-The current repository contains two R scripts for cultivar calibration and plotting, two CSV data files, and a DSSAT-files directory. The original scripts depend on absolute `D:/...` and `C:/DSSAT47/...` paths.
+## Currently available
 
-## Needed original research materials
+- Legacy maize calibration and figure scripts; auxiliary CSV tables and model inputs.
+- Generic `R/sensitivity_helpers.R` functions for co-inertia and Sobol analyses, assuming user-supplied compatible data/model functions.
+- Generic `R/parameter_sampling.R` improved Latin hypercube sampling.
+- Synthetic co-inertia example, explicitly separate from the journal article.
+- Inventory of original co-inertia and Sobol source variants in `docs/UPLOADED_SOURCE_INVENTORY.md`.
 
-Import the verified scripts from the 2022 co-inertia and sensitivity study workspace, preserving the published method and its exact input/output conventions:
+## Remaining priorities
 
-- Co-inertia analysis associating 14 DSSAT outputs and 25 soil and cultivar inputs.
-- Sobol-based sensitivity / variance decomposition for SOC dynamics, initial and stable SOC, residue retention and compost.
-- Experiment tables, sampling designs, management inputs, and data dictionaries needed to reproduce reported figures.
-- Exact R package versions, random seeds, DSSAT executable/model version, and reproducibility limitations.
+1. **Publication-specific provenance:** reconcile archived factor designs against the *Field Crops Research* paper's 25-input / 14-output co-inertia and four-factor SOC/management Sobol experiments.
+2. **Match source to results:** establish script, DSSAT version, random seed, input/output matrix, plot and table for each published analysis.
+3. **Preserve the originals:** select definitive archive versions and place copies under a clearly marked `legacy/` directory only after permissions and path/safety review.
+4. **Make model execution safe:** remove writes to the installed genotype, ecotype, soil and experiment files; use generated run workspaces and parameterized config files.
+5. **Verify generic statistical functions:** add small deterministic R tests for Latin hypercube bounds, data alignment, PCA/co-inertia and Sobol sensitivity methods.
+6. **Create reproducible examples:** provide a synthetic standalone example and—if rights permit—a small real-data validation example reproducing identified statistics.
+7. **Pin dependencies:** R packages/versions, experiment matrix metadata, model version and any required nonredistributable inputs.
+8. **Document limitations:** make explicit which computations are reproducible using public code versus dependent on licensed scientific modeling tools and unpublished inputs.
 
-**Do not replace the original published methods with approximate example scripts and label them as the article's implementation.**
-
-## Proposed repository structure (not present yet)
+## Potential later layout (not all files exist yet)
 
 ```text
 R/
-    calibrate_maize.R
-    co_inertia.R
-    sobol_soc.R
+    parameter_sampling.R
+    sensitivity_helpers.R
     model_evaluation.R
+examples/
+    synthetic_analysis.R
+legacy/
+    <reviewed research snapshots>
 data/
-    README.md             # permitted data and provenance
-    example/              # small reproducible fixtures only
-inst/
-    dssat/                # templates permitted to distribute
-scripts/
-    run_calibration.R
-    run_sensitivity.R
+    README.md
 tests/
     testthat/
 docs/
-    methods.md            # published methods vs repository code
-legacy/
-    dssat_cornCV_calib.R
-    mediaforarticle.R
+    methods.md
+    source_to_figure_map.md
 ```
 
-## Engineering and scientific quality checks
+## Methodological scope
 
-1. Archive unmodified 2019 calibration scripts under `legacy/`.
-2. Convert hard-coded paths to a project-root configuration and avoid writing to installed DSSAT genotype files by default.
-3. Document source, units, sampling/runs, factor definitions and outputs for all figures.
-4. Validate co-inertia and Sobol analysis on the original saved results, or clearly mark datasets that cannot be redistributed.
-5. Add small deterministic fixtures and R unit tests for parsing, metrics, and sampled parameter ranges.
-6. Provide a direct link to the publication DOI and a code-to-figure reproducibility matrix.
-7. Select a license after checking collaborator and institutional ownership of scripts/data.
+AHP/GIS suitability weighting, Latin hypercube input-design, co-inertia analysis, Sobol sensitivity, probability-based soil sampling and MCMC calibration solve different problems. This repository concentrates on **model-input experimental design and sensitivity of simulated SOC and crop-system responses**. It is not a soil-carbon certification engine, a validated field sampling scheme, or evidence of an implemented hierarchical Bayesian MRV framework.
 
-## Scope boundaries
-
-- **Co-inertia and Sobol sensitivity analysis** are documented by the paper; they are not equivalent to a probability-based soil sampling design.
-- **Optimization for parameter fit** is not in itself Bayesian hierarchical estimation or MCMC.
-- No claim is made that this software is Verra/Isometric certified or applicable to carbon credits without further evaluation.
+Full-paper replication will only be claimed after input data and numerical results are independently cross-checked.
