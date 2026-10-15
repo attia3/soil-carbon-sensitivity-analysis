@@ -24,6 +24,7 @@ The paper:
 | `mediaforarticle.R` | Historical observed/simulated figure workflow; model paths are not portable |
 | `Corn_calibration.csv`, `OBS_Calib-Data_.csv` | Original small calibration/observation tables |
 | `DSSAT-files/` | Legacy project inputs |
+| `R/parameter_sampling.R` | Improved Latin hypercube sampling of user-specified parameter ranges |
 | `R/sensitivity_helpers.R` | New **model-agnostic** co-inertia and Sobol analytical wrappers |
 | `examples/synthetic_analysis.R` | Synthetic co-inertia example; **not the paper dataset** |
 | `docs/UPLOADED_SOURCE_INVENTORY.md` | Inventory of verified co-inertia and Sobol source-script variants |
@@ -31,10 +32,10 @@ The paper:
 
 ## Run a synthetic statistical example
 
-Requires R and the CRAN package `ade4`:
+Requires R and the CRAN package `ade4` for the co-inertia demonstration; install `lhs` for parameter sampling and `sensitivity` for Sobol analysis:
 
 ```r
-install.packages("ade4")
+install.packages(c("ade4", "lhs", "sensitivity"))
 source("R/sensitivity_helpers.R")
 # At the project root, run: Rscript examples/synthetic_analysis.R
 ```
