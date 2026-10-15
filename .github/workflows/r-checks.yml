@@ -1,0 +1,28 @@
+name: R analysis checks
+
+on:
+  push:
+    branches: [master, add-original-sensitivity-r-scripts]
+    paths:
+      - "R/**"
+      - "tests/**"
+      - "examples/**"
+      - ".github/workflows/r-checks.yml"
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 'release'
+      - name: Parse all R modules and examples
+        shell: bash
+        run: |
+          Rscript -e 'for (p in c(Sys.glob("R/*.R"), Sys.glob("examples/*.R"), Sys.glob("tests/*.R"))) {parse(file=p); cat("Parsed:", p, "\\n")}'
+      - name: Run standalone checks
+        run: Rscript tests/test_sensitivity_pipeline.R
