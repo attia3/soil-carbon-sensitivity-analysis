@@ -1,37 +1,27 @@
-# Source review — original scientific methods
+# Inventory of research R scripts reviewed
 
-The user supplied three research archives for assessing and expanding these repositories. This note documents **methods and provenance**. All eight original R source scripts have now been placed under [`legacy/`](../legacy/) with top-level execution guards. Entire workspace folders, session images, IDE metadata, and intermediate data files are **not** published.
+Two research archives were reviewed before consolidating the sensitivity-analysis workflows into a professional `R/` directory.
 
-## Co-inertia archive (original R scripts now published in [`legacy/co_inertia/`](../legacy/co_inertia/)): `Co_interia_19_12_22.zip`
+## Co-inertia source family
 
-- `Latest_1_11_20/Co_inertia1.R`: improved Latin hypercube design (26 input factors in this variant), simulation outputs and paired PCA / `ade4::coinertia`.
-- `Latest_1_11_20/Senseanalysis5.R`: 27-factor experimental variant.
-- `Latest_1_11_20/Senseanalysis6.R`: 21-factor experimental variant.
-- `Latest_1_11_20/Senseanalysis7.R`: 24-factor experimental variant.
-- `Co_inertia_3_12/Co_inertia3_12.R`: 27-factor experimental variant.
-- `new/Senseanalysis4.R`: combined co-inertia and univariate exploration.
+| Archived R script | Original experimental design | Decision |
+| --- | --- | --- |
+| `Latest_1_11_20/Co_inertia1.R` | 1,500 × 26 improved LHS, original source includes explicit SAOC/SASC model C pools | **Selected** for transparent factor ranges and 14 response labels |
+| `Co_inertia_3_12/Co_inertia3_12.R` | 1,500 × 27 | Not selected: exploratory alternative |
+| `Latest_1_11_20/Senseanalysis5.R` | 1,500 × 27 | Not selected: exploratory alternative |
+| `Latest_1_11_20/Senseanalysis6.R` | 500 × 21 | Not selected: shorter exploratory variant |
+| `Latest_1_11_20/Senseanalysis7.R` | 500 × 24 | Not selected: shorter exploratory variant |
+| `new/Senseanalysis4.R` | 1,500 × 23; additional 2,000 × 23 experiment | Not selected: combines exploratory co-inertia/Sobol–Owen methods |
 
-## Sobol archive (original R scripts now published in [`legacy/sobol/`](../legacy/sobol/)): `Sobol_3_18.zip`
+## Sobol source family
 
-- `Sobol.R`: four factor ranges, `parameterSets(..., method = "sobol")`, and `sobolSalt` with multiple crop/SOC-related model responses; 200-sample variant.
-- `Sobol2/Sobol2.R`: similar four-factor study with soil carbon response; 300-sample variant.
+| Archived R script | Original experimental design | Decision |
+| --- | --- | --- |
+| `Sobol_3_18/Sobol.R` | Four factors, 200 base samples, multiple crop and SOC responses | **Selected** as source for factor settings and the five response labels |
+| `Sobol_3_18/Sobol2/Sobol2.R` | Four factors, 300 base samples, narrower SOC response | Not selected: exploratory alternative |
 
-## Scientific provenance / caveats
+The retained methods have been refactored into [`R/maize_study_parameters.R`](../R/maize_study_parameters.R), [`R/co_inertia_analysis.R`](../R/co_inertia_analysis.R), [`R/sobol_soc_analysis.R`](../R/sobol_soc_analysis.R), and [`R/soc_response_metrics.R`](../R/soc_response_metrics.R), supported by generic sampling and statistical functions already in `R/`.
 
-The peer-reviewed paper describes co-inertia analysis of **25 inputs and 14 model outputs** plus Sobol sensitivity of initial/stable SOC and management variables. Uploaded archival code contains multiple historical parameter counts, and the original exported datasets and exact code-to-figure crosswalk are not yet verified. No individual variant is labelled the definitive publication analysis.
+The source versions previously included in Git are still retrievable through [repository history](https://github.com/attia3/soil-carbon-sensitivity-analysis/commit/eafab135c919988df0f8ddf87bf3aa51e34d238d). See [SOURCE_PROVENANCE.md](SOURCE_PROVENANCE.md) for original SHA-256 checksums.
 
-Several archival scripts contain fixed `C:/DSSAT47` and `D:/ISmalia_DSSAT` paths and directly **overwrite genotype, soil, experiment and batch files**. They must be run only on isolated research copies with an independent backup. The scientific statements from these scripts are preserved in `legacy/`, preceded only by a safety header and a `stop()` call. They should not be run without deliberately removing that guard after preparing isolated input files. Public availability does not imply reproduction or a verified production package.
-
-## New code
-
-- `R/sensitivity_helpers.R` provides **generic** co-inertia and Sobol wrappers matching the original methods' analytical structure, not a reimplementation of all model runs.
-- `examples/synthetic_analysis.R` uses synthetic values to illustrate the procedure and cannot verify the paper's numerical findings.
-
-See [the source-to-method crosswalk](METHODS_SOURCE_MAP.md) for individual paths, sample sizes, and the source archive guide.
-
-## Planned validation
-
-1. Confirm exact paper-specific parameter design and input-output schema against original saved results.
-2. **Completed in part:** retain guarded archival copies in `legacy/`; next, convert them to configurable, isolated runs after path and publication-rights review.
-3. Move model execution into a sandbox/configurable adapter and add run provenance.
-4. Compare outputs to published tables/figures before claiming independent end-to-end reproduction.
+**Scientific caution:** These are historical script experiments; the published paper describes 25 inputs and 14 outputs. Version selection alone does not verify which source generated the journal figures. Model-specific execution and full numerical replication require additional licensed inputs, calibration files and independent validation.
