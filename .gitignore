@@ -1,0 +1,23 @@
+# R history and local sessions
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+renv/library/
+renv/staging/
+# Workstation specific settings
+.env
+.env.*
+!.env.example
+# DSSAT executables and generated output
+*.EXE
+*.exe
+*.OUT
+*.out
+*.log
+results/
+outputs/
+temp/
+# General
+.DS_Store
+Thumbs.db
