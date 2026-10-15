@@ -32,8 +32,9 @@ maize_calibration_bounds <- function(parameters) {
   if (nrow(parameters) != 15L) {
     stop("The historical maize calibration expects 15 cultivar/ecotype parameters")
   }
-  names <- as.character(parameters$Par_orig)
-  if (anyNA(names) || any(!nzchar(names)) || anyDuplicated(names)) {
+  parameter_names <- as.character(parameters$Par_orig)
+  if (anyNA(parameter_names) || any(!nzchar(parameter_names)) ||
+      anyDuplicated(parameter_names)) {
     stop("Parameter names must be present and unique")
   }
   initial <- as.numeric(parameters$initial_values)
@@ -43,7 +44,9 @@ maize_calibration_bounds <- function(parameters) {
       any(lower >= upper) || any(initial < lower | initial > upper)) {
     stop("Parameter bounds/initial values must be finite and consistent")
   }
-  names(initial) <- names(lower) <- names(upper) <- names
+  names(initial) <- parameter_names
+  names(lower) <- parameter_names
+  names(upper) <- parameter_names
   list(initial = initial, lower = lower, upper = upper)
 }
 
