@@ -94,6 +94,7 @@ These are methodological building blocks, **not** a substitute for probability-b
 
 - [Original co-inertia and Sobol R scripts](legacy/README.md)
 - [Methods and publication source crosswalk](docs/METHODS_SOURCE_MAP.md)
+- [Original-script SHA-256 provenance](docs/ORIGINAL_SOURCE_CHECKSUMS.md)
 - [Inventory of original research variants](docs/UPLOADED_SOURCE_INVENTORY.md)
 - [Validation and repository modernization roadmap](docs/ROADMAP.md)
 - [Companion regional modeling pipeline](https://github.com/attia3/agroecosystem-simulation-pipeline)
